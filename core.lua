@@ -1,20 +1,26 @@
 local ADDON_NAME, ns = ...
 local L = ns.L
 
+local soundTypes = ns.data.soundTypes
 local soundTypesList = {}
-for soundTypes in pairs(ns.data.soundTypes) do
-    table.insert(soundTypesList, soundTypes)
+for index = 1, #soundTypes do
+    local lookup = soundTypes[index]
+    table.insert(soundTypesList, lookup.type)
 end
+
+-- Load the Addon
 
 function PrincessHasArrived_OnLoad(self)
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:RegisterEvent("CHAT_MSG_ADDON")
 end
 
+-- Event Triggers
+
 function PrincessHasArrived_OnEvent(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         local isInitialLogin, isReloadingUi = ...
-        C_ChatInfo.RegisterAddonMessagePrefix(ns.name)
+        local registered = C_ChatInfo.RegisterAddonMessagePrefix(ns.name)
         ns:SetOptionDefaults()
         ns:CreateSettingsPanel(PHA_options, ns.data.defaults, L.Settings, ns.title, ns.prefix, ns.version)
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -26,6 +32,36 @@ function PrincessHasArrived_OnEvent(self, event, ...)
         ns:ReceivedSound(soundType, sender)
     end
 end
+
+-- Addon Compartment Handling
+
+AddonCompartmentFrame:RegisterAddon({
+    text = ns.title,
+    icon = ns.icon,
+    registerForAnyClick = true,
+    notCheckable = true,
+    func = function(button, menuInputData, menu)
+        local mouseButton = menuInputData.buttonName
+        if mouseButton == "RightButton" then
+            ns:OpenSettings()
+        else
+            ns:ProcessSound()
+        end
+    end,
+    funcOnEnter = function(menuItem)
+        GameTooltip:SetOwner(menuItem)
+        GameTooltip:SetText(ns.title .. "  v" .. ns.version)
+        GameTooltip:AddLine(" ", 1, 1, 1, true)
+        GameTooltip:AddLine(L.AddonCompartmentTooltip1, 1, 1, 1, true)
+        GameTooltip:AddLine(L.AddonCompartmentTooltip2, 1, 1, 1, true)
+        GameTooltip:Show()
+    end,
+    funcOnLeave = function()
+        GameTooltip:Hide()
+    end,
+})
+
+-- Slash Command Handling
 
 SlashCmdList["PRINCESSHASARRIVED"] = function(message)
     message = message and ns:Trim(message) or nil
@@ -40,40 +76,7 @@ SlashCmdList["PRINCESSHASARRIVED"] = function(message)
         ns:PrettyPrint(L.SoundsToggled:format((PHA_options.PHA_sound and _G.VIDEO_OPTIONS_ENABLED or _G.MUTED):lower()))
     else
         -- Process the message for soundTypes
-        local soundType = (message ~= nil and message ~= "") and message:lower() or nil
-        local channel = ns:GetChannel()
-        if channel then
-            if soundType then
-                -- Exact match
-                if ns.data.soundTypes[soundType] then
-                    ns:SendSound(soundType, channel)
-                    return
-                end
-                -- Alias exact match
-                if ns.data.soundTypeAliases[soundType] then
-                    ns:SendSound(ns.data.soundTypeAliases[soundType], channel)
-                    return
-                end
-                -- Fuzzy match
-                for soundTypeLookup, _ in pairs(ns.data.soundTypes) do
-                    if soundTypeLookup:match(soundType) or soundType:match(soundTypeLookup) then
-                        ns:SendSound(soundTypeLookup, channel)
-                        return
-                    end
-                end
-                -- Alias fuzzy match
-                for soundTypeAlias, soundTypeLookup in pairs(ns.data.soundTypeAliases) do
-                    if soundTypeAlias:match(soundType) or soundType:match(soundTypeAlias) then
-                        ns:SendSound(soundTypeLookup, channel)
-                        return
-                    end
-                end
-            end
-            -- Default/Fallback
-            ns:SendSound("chime", channel)
-        else
-            ns:PrettyPrint(L.SendFailed)
-        end
+        ns:ProcessSound(message)
     end
 end
 SLASH_PRINCESSHASARRIVED1 = "/" .. ns.command

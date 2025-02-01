@@ -3,17 +3,45 @@ local _, ns = ...
 ns.data = {
     defaults = {
         sound = true,
+        defaultSound = "chime",
     },
     soundTypes = {
-        ["chime"] = 1129273,
-        ["horn"] = 4202812,
-        ["bell"] = 566564,
-        ["bell toll"] = 566254,
-        ["sleigh bells"] = 3076692,
-        ["shays bell"] = 568154,
-        ["owl hoot"] = 4518673,
-        ["fail"] = 903974,
-        ["laugh"] = 551682,
+        [1] = {
+            type = "bell",
+            id = 566564,
+        },
+        [2] = {
+            type = "bell toll",
+            id = 566254,
+        },
+        [3] = {
+            type = "chime",
+            id = 1129273,
+        },
+        [4] = {
+            type = "fail",
+            id = 903974,
+        },
+        [5] = {
+            type = "horn",
+            id = 4202812,
+        },
+        [6] = {
+            type = "laugh",
+            id = 551682,
+        },
+        [7] = {
+            type = "owl hoot",
+            id = 4518673,
+        },
+        [8] = {
+            type = "sleigh bells",
+            id = 3076692,
+        },
+        [9] = {
+            type = "shays bell",
+            id = 568154,
+        },
     },
     soundTypeAliases = {
         ["ha"] = "laugh",
