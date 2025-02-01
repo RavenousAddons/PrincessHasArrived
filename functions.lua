@@ -50,7 +50,7 @@ function ns:ProcessSound(soundType)
             for index = 1, #soundTypes do
                 local lookup = soundTypes[index]
                 if lookup.type == soundType then
-                    ns:SendSound(soundType, channel, target)
+                    ns:SendSound(lookup.type, channel, target)
                     return
                 end
             end
@@ -62,8 +62,8 @@ function ns:ProcessSound(soundType)
             -- Fuzzy match
             for index = 1, #soundTypes do
                 local lookup = soundTypes[index]
-                if lookup:match(soundType) or soundType:match(lookup) then
-                    ns:SendSound(lookup, channel, target)
+                if lookup.type:match(soundType) or soundType:match(lookup.type) then
+                    ns:SendSound(lookup.type, channel, target)
                     return
                 end
             end
