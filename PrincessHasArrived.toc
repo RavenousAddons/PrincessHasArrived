@@ -1,0 +1,17 @@
+## Interface: 110007
+## Version: 1.0.0
+
+## Name: Princess Has Arrived
+## Title: Princess Has Arrived
+## Notes: Ding! This is your stop, ma'am!
+## Author: RavenousAddons
+## IconAtlas: TaxiNode_Undiscovered
+
+## SavedVariables: PHA_options
+
+## X-License: Public Domain
+## X-Website: https://github.com/RavenousAddons/PrincessHasArrived
+
+Libs/RavenousUtils/RavenousUtils.xml
+Libs/RavenousOptions/RavenousOptions.xml
+PrincessHasArrived.xml

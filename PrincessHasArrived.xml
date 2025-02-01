@@ -1,0 +1,14 @@
+<Ui>
+    <Script file="metadata.lua" />
+    <Script file="data.lua" />
+    <Script file="locales.lua" />
+    <Script file="functions.lua" />
+    <Script file="core.lua" />
+
+    <Frame name="PrincessHasArrived">
+        <Scripts>
+            <OnLoad function="PrincessHasArrived_OnLoad" />
+            <OnEvent function="PrincessHasArrived_OnEvent" />
+        </Scripts>
+    </Frame>
+</Ui>
