@@ -34,7 +34,8 @@ function ns:SendSound(soundType, channel)
         C_ChatInfo.SendAddonMessage(ns.name, soundType, channel)
         return
     end
-    ns:PrettyPrint(L.SendWarning:format(math.max(ns.data.toggles.sentSound - GetServerTime(), 1)))
+    local timeRemaining = math.max(ns.data.toggles.sentSound - GetServerTime(), 1)
+    ns:PrettyPrint(L.SendWarning:format(timeRemaining, timeRemaining ~= 1 and "s" or ""))
 end
 
 function ns:ReceivedSound(soundType, sender)

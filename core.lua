@@ -35,6 +35,9 @@ SlashCmdList["PRINCESSHASARRIVED"] = function(message)
     elseif message == "h" or message:match("help") then
         -- Print ways to interact with addon
         ns:PrettyPrint(L.Help .. "|n" .. table.concat(soundTypesList, ", "))
+    elseif message == "m" or message:match("mute") or message == "s" or message:match("sound") then
+        PHA_options.PHA_sound = PHA_options.PHA_sound ~= true and true or false
+        ns:PrettyPrint(L.SoundsToggled:format((PHA_options.PHA_sound and _G.VIDEO_OPTIONS_ENABLED or _G.MUTED):lower()))
     else
         -- Process the message for soundTypes
         local soundType = (message ~= nil and message ~= "") and message:lower() or nil
