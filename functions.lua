@@ -1,7 +1,7 @@
 local ADDON_NAME, ns = ...
 local L = ns.L
 
-local soundTypes = ns.data.soundTypes
+local sounds = ns.data.sounds
 local soundTypeAliases = ns.data.soundTypeAliases
 
 function ns:SetOptionDefaults()
@@ -47,56 +47,52 @@ function ns:GetChannel()
     return nil
 end
 
-function ns:ProcessSound(soundType)
-    local soundType = (soundType ~= nil and soundType ~= "") and soundType:lower() or nil
-    local channel = ns:GetChannel()
-    local target
-    if not channel and PHA_options.PHA_debug then
-        channel = "WHISPER"
-        target = UnitName("player") .. "-" .. GetNormalizedRealmName("player")
-    end
-    if channel then
-        if soundType then
-            -- Exact match
-            for index = 1, #soundTypes do
-                local lookup = soundTypes[index]
-                if lookup.type == soundType then
-                    ns:SendSound(lookup.type, channel, target)
-                    return
-                end
-            end
-            -- Alias exact match
-            if soundTypeAliases[soundType] then
-                ns:SendSound(soundTypeAliases[soundType], channel, target)
-                return
-            end
-            -- Fuzzy match
-            for index = 1, #soundTypes do
-                local lookup = soundTypes[index]
-                if lookup.type:match(soundType) or soundType:match(lookup.type) then
-                    ns:SendSound(lookup.type, channel, target)
-                    return
-                end
-            end
-            -- Alias fuzzy match
-            for alias, lookup in pairs(soundTypeAliases) do
-                if alias:match(soundType) or soundType:match(alias) then
-                    ns:SendSound(lookup, channel, target)
-                    return
-                end
-            end
+function ns:GetSoundMatch(soundType)
+    -- Exact match
+    for index = 1, #sounds do
+        local sound = sounds[index]
+        if sound.type == soundType then
+            return sound.type
         end
-        -- Default/Fallback
-        ns:SendSound(ns:OptionValue(PHA_options, "defaultSound"), channel, target)
-    else
-        ns:PrettyPrint(L.SendFailed)
+    end
+    -- Alias exact match
+    if soundTypeAliases[soundType] then
+        return soundTypeAliases[soundType]
+    end
+    -- Fuzzy match
+    for index = 1, #sounds do
+        local sound = sounds[index]
+        if sound.type:match(soundType) or soundType:match(sound.type) then
+            return sound.type
+        end
+    end
+    -- Alias fuzzy match
+    for alias, sound in pairs(soundTypeAliases) do
+        if alias:match(soundType) or soundType:match(alias) then
+            return sound
+        end
+    end
+    return nil
+end
+
+function ns:GetSoundTypeIndex(soundType)
+    for index = 1, #sounds do
+        local sound = sounds[index]
+        if sound.type == soundType then
+            return index
+        end
     end
 end
 
 function ns:SendSound(soundType, channel, target)
     if not ns.data.toggles.sentSound then
         ns:Toggle("sentSound", ns.data.timeout)
-        local response = C_ChatInfo.SendAddonMessage(ns.name, soundType, channel, target)
+        local soundsIndex = ns:GetSoundTypeIndex(soundType)
+        local sound = sounds[soundsIndex]
+        local response = C_ChatInfo.SendAddonMessage(ns.name, sound.type, channel, target)
+        if ns:OptionValue(PHA_options, "allowActions") and sound.action ~= nil then
+            sound.action()
+        end
         return
     end
     local timeRemaining = math.max(ns.data.toggles.sentSound - GetServerTime(), 1)
@@ -104,12 +100,33 @@ function ns:SendSound(soundType, channel, target)
 end
 
 function ns:ReceivedSound(soundType, sender)
-    for index = 1, #soundTypes do
-        local lookup = soundTypes[index]
-        if lookup.type == soundType then
-            ns:PlaySound(PHA_options, type(lookup.id) == "function" and lookup.id() or lookup.id)
-        end
+    local soundsIndex = ns:GetSoundTypeIndex(soundType)
+    local sound = sounds[soundsIndex]
+    ns:PlaySound(PHA_options, type(sound.id) == "function" and sound.id() or sound.id)
+    if ns:OptionValue(PHA_options, "allowReactions") and sound.reaction ~= nil then
+        sound.reaction()
     end
     C_GamePad.SetVibration("Low", 0.2)
-    ns:PrettyPrint(L.Received:format(sender, soundType, ns:OptionValue(PHA_options, "sound") and "" or " (" .. _G.MUTED:lower() .. ")"))
+    ns:PrettyPrint(L.Received:format(sender, sound.type, ns:OptionValue(PHA_options, "sound") and "" or " (" .. _G.MUTED:lower() .. ")"))
+end
+
+function ns:ProcessSound(message)
+    local message = (message ~= nil and message ~= "") and message:lower() or nil
+    local channel = ns:GetChannel()
+    local target
+    if not channel and PHA_options.PHA_debug then
+        channel = "WHISPER"
+        target = UnitName("player") .. "-" .. GetNormalizedRealmName("player")
+    end
+    if channel then
+        local soundType
+        if message then
+            soundType = ns:GetSoundMatch(message)
+        else
+            soundType = ns:OptionValue(PHA_options, "defaultSound")
+        end
+        ns:SendSound(soundType, channel, target)
+    else
+        ns:PrettyPrint(L.SendFailed)
+    end
 end

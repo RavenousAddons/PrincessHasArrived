@@ -98,9 +98,11 @@ local specialSoundTypes = {
 ns.data = {
     defaults = {
         sound = true,
-        defaultSound = "bell",
+        allowActions = false,
+        allowReactions = false,
+        defaultSound = "greeting",
     },
-    soundTypes = {
+    sounds = {
         [1] = {
             type = "alarm",
             id = 2066498,
@@ -134,6 +136,9 @@ ns.data = {
             id = function()
                 local specialSoundType = specialSoundTypes.greeting
                 return specialSoundType[ns.race] and specialSoundType[ns.race][ns.gender] or specialSoundType[ns.gender]
+            end,
+            reaction = function()
+                DoEmote("WAVE")
             end,
         },
         [9] = {

@@ -1,11 +1,11 @@
 local ADDON_NAME, ns = ...
 local L = ns.L
 
-local soundTypes = ns.data.soundTypes
+local sounds = ns.data.sounds
 local soundTypesList = {}
-for index = 1, #soundTypes do
-    local lookup = soundTypes[index]
-    table.insert(soundTypesList, lookup.type)
+for index = 1, #sounds do
+    local sound = sounds[index]
+    table.insert(soundTypesList, sound.type)
 end
 
 -- Load the Addon
@@ -77,7 +77,7 @@ SlashCmdList["PRINCESSHASARRIVED"] = function(message)
         PHA_options.PHA_sound = PHA_options.PHA_sound ~= true and true or false
         ns:PrettyPrint(L.SoundsToggled:format((PHA_options.PHA_sound and _G.VIDEO_OPTIONS_ENABLED or _G.MUTED):lower()))
     else
-        -- Process the message for soundTypes
+        -- Process the message for sound types
         ns:ProcessSound(message)
     end
 end
