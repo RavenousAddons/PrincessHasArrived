@@ -10,7 +10,7 @@ end })
 
 local sounds = ns.data.sounds
 
-L.Received = "|cffffff00%s|r sent a |cffffff00%s%s|r." -- sender, soundType
+L.Received = "|cffffff00%s|r sent a |cffffff00%s%s|r to %s." -- sender, soundType, muted, channel
 L.SendWarning = "You must wait |cffffff00%s|r second%s before sending a sound again." -- number, string
 L.SendFailed = "You need to be in a group or instance to send sounds!"
 L.SoundsToggled = "Sounds have been |cffffff00%s|r."

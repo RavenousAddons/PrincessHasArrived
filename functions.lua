@@ -3,6 +3,7 @@ local L = ns.L
 
 local sounds = ns.data.sounds
 local soundTypeAliases = ns.data.soundTypeAliases
+local channels = {"PARTY", "RAID", "INSTANCE", "BATTLEGROUND", "GUILD", "OFFICER"}
 
 function ns:SetOptionDefaults()
     PHA_options = PHA_options or {}
@@ -82,6 +83,7 @@ function ns:GetSoundTypeIndex(soundType)
             return index
         end
     end
+    return nil
 end
 
 function ns:SendSound(soundType, channel, target)
@@ -99,7 +101,7 @@ function ns:SendSound(soundType, channel, target)
     ns:PrettyPrint(L.SendWarning:format(timeRemaining, timeRemaining ~= 1 and "s" or ""))
 end
 
-function ns:ReceivedSound(soundType, sender)
+function ns:ReceivedSound(soundType, sender, channel)
     local soundsIndex = ns:GetSoundTypeIndex(soundType)
     local sound = sounds[soundsIndex]
     ns:PlaySound(PHA_options, type(sound.id) == "function" and sound.id() or sound.id)
@@ -107,24 +109,37 @@ function ns:ReceivedSound(soundType, sender)
         sound.reaction()
     end
     C_GamePad.SetVibration("Low", 0.2)
-    ns:PrettyPrint(L.Received:format(sender, sound.type, ns:OptionValue(PHA_options, "sound") and "" or " (" .. _G.MUTED:lower() .. ")"))
+    ns:PrettyPrint(L.Received:format(sender, sound.type, ns:OptionValue(PHA_options, "sound") and "" or " (" .. _G.MUTED:lower() .. ")", channel == "WHISPER" and "you" or "the " .. channel:lower()))
 end
 
 function ns:ProcessSound(message)
-    local message = (message ~= nil and message ~= "") and message:lower() or nil
     local channel = ns:GetChannel()
+    local soundType = ns:OptionValue(PHA_options, "defaultSound")
     local target
+    local a, b = strsplit(" ", message)
+    if b and b ~= "" then
+        soundType = a:lower()
+        if ns:Contains(channels, b:upper()) then
+            channel = b:upper()
+        else
+            target = b
+            channel = "WHISPER"
+        end
+    elseif a and a ~= "" then
+        if ns:GetSoundTypeIndex(a) then
+            soundType = a:lower()
+        elseif ns:Contains(channels, a:upper()) then
+            channel = a:upper()
+        else
+            target = a
+            channel = "WHISPER"
+        end
+    end
     if not channel and PHA_options.PHA_debug then
         channel = "WHISPER"
         target = UnitName("player") .. "-" .. GetNormalizedRealmName("player")
     end
     if channel then
-        local soundType
-        if message then
-            soundType = ns:GetSoundMatch(message)
-        else
-            soundType = ns:OptionValue(PHA_options, "defaultSound")
-        end
         ns:SendSound(soundType, channel, target)
     else
         ns:PrettyPrint(L.SendFailed)

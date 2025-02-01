@@ -112,26 +112,22 @@ ns.data = {
             id = 566564,
         },
         [3] = {
-            type = "bell toll",
-            id = 566254,
-        },
-        [4] = {
             type = "chime",
             id = 1129273,
         },
-        [5] = {
+        [4] = {
             type = "clock",
             id = 567458,
         },
-        [6] = {
+        [5] = {
             type = "fail",
             id = 903974,
         },
-        [7] = {
+        [6] = {
             type = "felreaver",
             id = 548880,
         },
-        [8] = {
+        [7] = {
             type = "greeting",
             id = function()
                 local specialSoundType = specialSoundTypes.greeting
@@ -141,29 +137,33 @@ ns.data = {
                 DoEmote("WAVE")
             end,
         },
-        [9] = {
+        [8] = {
             type = "hazard",
             id = 2924414,
         },
-        [10] = {
+        [9] = {
             type = "horn",
             id = 4202812,
         },
-        [11] = {
+        [10] = {
             type = "laugh",
             id = 551682,
         },
-        [12] = {
-            type = "owl hoot",
+        [11] = {
+            type = "hoot",
             id = 4518673,
         },
-        [13] = {
-            type = "sleigh bells",
+        [12] = {
+            type = "sleigh",
             id = 3076692,
         },
-        [14] = {
-            type = "shays bell",
+        [13] = {
+            type = "shays",
             id = 568154,
+        },
+        [14] = {
+            type = "toll",
+            id = 566254,
         },
         [15] = {
             type = "triangle",

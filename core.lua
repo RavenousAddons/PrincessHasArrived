@@ -31,7 +31,7 @@ function PrincessHasArrived_OnEvent(self, event, ...)
         if addonName ~= ns.name then
             return
         end
-        ns:ReceivedSound(soundType, sender)
+        ns:ReceivedSound(soundType, sender, channel)
     end
 end
 
