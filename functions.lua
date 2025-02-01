@@ -118,7 +118,7 @@ function ns:ProcessSound(message)
     local target
     local a, b = strsplit(" ", message)
     if b and b ~= "" then
-        soundType = a:lower()
+        soundType = ns:GetSoundMatch(a:lower())
         if ns:Contains(channels, b:upper()) then
             channel = b:upper()
         else
@@ -126,18 +126,15 @@ function ns:ProcessSound(message)
             channel = "WHISPER"
         end
     elseif a and a ~= "" then
-        if ns:GetSoundTypeIndex(a) then
-            soundType = a:lower()
+        local sound = ns:GetSoundMatch(a:lower())
+        if sound then
+            soundType = sound
         elseif ns:Contains(channels, a:upper()) then
             channel = a:upper()
         else
             target = a
             channel = "WHISPER"
         end
-    end
-    if not channel and PHA_options.PHA_debug then
-        channel = "WHISPER"
-        target = UnitName("player") .. "-" .. GetNormalizedRealmName("player")
     end
     if channel then
         ns:SendSound(soundType, channel, target)

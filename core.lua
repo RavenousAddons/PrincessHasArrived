@@ -1,13 +1,6 @@
 local ADDON_NAME, ns = ...
 local L = ns.L
 
-local sounds = ns.data.sounds
-local soundTypesList = {}
-for index = 1, #sounds do
-    local sound = sounds[index]
-    table.insert(soundTypesList, sound.type)
-end
-
 -- Load the Addon
 
 function PrincessHasArrived_OnLoad(self)
@@ -64,6 +57,13 @@ AddonCompartmentFrame:RegisterAddon({
 })
 
 -- Slash Command Handling
+
+local sounds = ns.data.sounds
+local soundTypesList = {}
+for index = 1, #sounds do
+    local sound = sounds[index]
+    soundTypesList[index] = ns:Capitalize(sound.type)
+end
 
 SlashCmdList["PRINCESSHASARRIVED"] = function(message)
     message = message and ns:Trim(message) or nil

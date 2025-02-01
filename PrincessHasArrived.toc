@@ -1,5 +1,5 @@
 ## Interface: 110007
-## Version: 1.0.6
+## Version: 1.0.7
 
 ## Name: Princess Has Arrived
 ## Title: Princess Has Arrived
