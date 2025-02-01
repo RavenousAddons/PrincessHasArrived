@@ -11,6 +11,29 @@ function ns:SetOptionDefaults()
     end
 end
 
+function ns:Trim(value)
+   local a = value:match("^%s*()")
+   local b = value:match("()%s*$", a)
+   return value:sub(a, b - 1)
+end
+
+function ns:Capitalize(value)
+    return value:gsub("(%l)(%w*)", function(first, rest)
+        return first:upper() .. rest:lower()
+    end)
+end
+
+function ns:GetRace()
+    local _, raceName, _ = UnitRace("player")
+    return raceName:lower():gsub("%s+", "")
+end
+
+function ns:GetGender()
+    local gender = UnitSex("player")
+    -- because this is for getting voice files, we assume female if not male
+    return gender == 2 and "male" or "female"
+end
+
 function ns:GetChannel()
     local partyMembers = GetNumSubgroupMembers()
     local raidMembers = IsInRaid() and GetNumGroupMembers() or 0
@@ -22,18 +45,6 @@ function ns:GetChannel()
         return "PARTY"
     end
     return nil
-end
-
-function ns:Trim(value)
-   local a = value:match("^%s*()")
-   local b = value:match("()%s*$", a)
-   return value:sub(a, b - 1)
-end
-
-function ns:Capitalize(value)
-    return value:gsub("(%l)(%w*)", function(first, rest)
-        return first:upper() .. rest:lower()
-    end)
 end
 
 function ns:ProcessSound(soundType)
@@ -96,7 +107,7 @@ function ns:ReceivedSound(soundType, sender)
     for index = 1, #soundTypes do
         local lookup = soundTypes[index]
         if lookup.type == soundType then
-            ns:PlaySound(PHA_options, lookup.id)
+            ns:PlaySound(PHA_options, type(lookup.id) == "function" and lookup.id() or lookup.id)
         end
     end
     C_GamePad.SetVibration("Low", 0.2)

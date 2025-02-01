@@ -20,7 +20,9 @@ end
 function PrincessHasArrived_OnEvent(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         local isInitialLogin, isReloadingUi = ...
-        local registered = C_ChatInfo.RegisterAddonMessagePrefix(ns.name)
+        ns.registered = C_ChatInfo.RegisterAddonMessagePrefix(ns.name)
+        ns.race = ns:GetRace()
+        ns.gender = ns:GetGender()
         ns:SetOptionDefaults()
         ns:CreateSettingsPanel(PHA_options, ns.data.defaults, L.Settings, ns.title, ns.prefix, ns.version)
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
