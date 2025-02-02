@@ -14,6 +14,7 @@ function PrincessHasArrived_OnEvent(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         local isInitialLogin, isReloadingUi = ...
         ns.registered = C_ChatInfo.RegisterAddonMessagePrefix(ns.name)
+        ns.characterName = UnitName("player") .. "-" .. GetNormalizedRealmName("player")
         ns.race = ns:GetRace()
         ns.gender = ns:GetGender()
         ns:SetOptionDefaults()

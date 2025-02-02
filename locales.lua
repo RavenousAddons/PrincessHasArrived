@@ -39,7 +39,7 @@ L.Settings = {
             },
             [3] = {
                 key = "defaultSound",
-                name = "Your default sound",
+                name = "Your Default Sound",
                 tooltip = "What sound to play when calling the slash command without any parameters.",
                 choices = function(container)
                     for index = 1, #sounds do

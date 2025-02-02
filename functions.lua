@@ -3,6 +3,7 @@ local L = ns.L
 
 local sounds = ns.data.sounds
 local soundTypeAliases = ns.data.soundTypeAliases
+local specialSoundTypes = ns.data.specialSoundTypes
 local channels = {"PARTY", "RAID", "INSTANCE", "BATTLEGROUND", "GUILD", "OFFICER"}
 
 function ns:SetOptionDefaults()
@@ -91,7 +92,11 @@ function ns:SendSound(soundType, channel, target)
         ns:Toggle("sentSound", ns.data.timeout)
         local soundsIndex = ns:GetSoundTypeIndex(soundType)
         local sound = sounds[soundsIndex]
-        local response = C_ChatInfo.SendAddonMessage(ns.name, sound.type, channel, target)
+        local soundType = sound.type
+        if specialSoundTypes[soundType] then
+            soundType = soundType .. ":" .. ns.race .. ":" .. ns.gender
+        end
+        local response = C_ChatInfo.SendAddonMessage(ns.name, soundType, channel, target)
         if ns:OptionValue(PHA_options, "allowActions") and sound.action ~= nil then
             sound.action()
         end
@@ -101,11 +106,16 @@ function ns:SendSound(soundType, channel, target)
     ns:PrettyPrint(L.SendWarning:format(timeRemaining, timeRemaining ~= 1 and "s" or ""))
 end
 
-function ns:ReceivedSound(soundType, sender, channel)
+function ns:ReceivedSound(receivedType, sender, channel)
+    local soundType, race, gender = strsplit(":", receivedType)
     local soundsIndex = ns:GetSoundTypeIndex(soundType)
     local sound = sounds[soundsIndex]
-    ns:PlaySound(PHA_options, type(sound.id) == "function" and sound.id() or sound.id, ns:OptionValue(PHA_options, "soundChannel"))
-    if ns:OptionValue(PHA_options, "allowReactions") and sound.reaction ~= nil then
+    local soundID = sound.id
+    if specialSoundTypes[sound.type] then
+        soundID = specialSoundTypes[sound.type][race][gender]
+    end
+    ns:PlaySound(PHA_options, type(soundID) == "function" and soundID() or soundID, ns:OptionValue(PHA_options, "soundChannel"))
+    if ns:OptionValue(PHA_options, "allowReactions") and ns.characterName ~= sender and sound.reaction ~= nil then
         sound.reaction()
     end
     C_GamePad.SetVibration("Low", 0.2)

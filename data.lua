@@ -134,9 +134,8 @@ ns.data = {
                 local specialSoundType = specialSoundTypes.greeting
                 return specialSoundType[ns.race] and specialSoundType[ns.race][ns.gender] or specialSoundType[ns.gender]
             end,
-            reaction = function()
-                DoEmote("WAVE")
-            end,
+            action = function() DoEmote("WAVE") end,
+            reaction = function() DoEmote("WAVE") end,
         },
         [8] = {
             type = "hazard",
@@ -176,6 +175,7 @@ ns.data = {
         hi = "greeting",
         hello = "greeting",
     },
+    specialSoundTypes = specialSoundTypes,
     soundChannels = {
         [1] = "Master",
         [2] = "Music",
