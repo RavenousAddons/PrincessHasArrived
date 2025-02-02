@@ -104,7 +104,7 @@ end
 function ns:ReceivedSound(soundType, sender, channel)
     local soundsIndex = ns:GetSoundTypeIndex(soundType)
     local sound = sounds[soundsIndex]
-    ns:PlaySound(PHA_options, type(sound.id) == "function" and sound.id() or sound.id)
+    ns:PlaySound(PHA_options, type(sound.id) == "function" and sound.id() or sound.id, ns:OptionValue(PHA_options, "soundChannel"))
     if ns:OptionValue(PHA_options, "allowReactions") and sound.reaction ~= nil then
         sound.reaction()
     end

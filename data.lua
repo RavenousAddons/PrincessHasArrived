@@ -98,6 +98,7 @@ local specialSoundTypes = {
 ns.data = {
     defaults = {
         sound = true,
+        soundChannel = "Master",
         allowActions = false,
         allowReactions = false,
         defaultSound = "greeting",
@@ -174,6 +175,13 @@ ns.data = {
         ha = "laugh",
         hi = "greeting",
         hello = "greeting",
+    },
+    soundChannels = {
+        [1] = "Master",
+        [2] = "Music",
+        [3] = "Effects",
+        [4] = "Ambience",
+        [5] = "Dialog",
     },
     toggles = {
         sentSound = false,

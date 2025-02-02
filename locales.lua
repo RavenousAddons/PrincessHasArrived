@@ -20,7 +20,7 @@ L.AddonCompartmentTooltip2 = "|cff" .. ns.color .. "Right-Click:|r Open Settings
 
 L.Settings = {
     [1] = {
-        title = "General Options",
+        title = "Sounds",
         options = {
             [1] = {
                 key = "sound",
@@ -28,16 +28,16 @@ L.Settings = {
                 tooltip = "Allows sounds to play.",
             },
             [2] = {
-                key = "allowActions",
-                name = "Actions",
-                tooltip = "Allows your character to perform certain emotes as actions alongside some sounds that you send.",
+                key = "soundChannel",
+                name = "Sound Channel",
+                tooltip = "Which channel should sounds play from?",
+                choices = function(container)
+                    for index = 1, #ns.data.soundChannels do
+                        container:Add(ns.data.soundChannels[index], ns.data.soundChannels[index])
+                    end
+                end,
             },
             [3] = {
-                key = "allowReactions",
-                name = "Reactions",
-                tooltip = "Allows your character to perform certain emotes as actions alongside some sounds that you receive.",
-            },
-            [4] = {
                 key = "defaultSound",
                 name = "Your default sound",
                 tooltip = "What sound to play when calling the slash command without any parameters.",
@@ -48,6 +48,21 @@ L.Settings = {
                         container:Add(sound.type, ns:Capitalize(sound.type) .. emoteString)
                     end
                 end,
+            },
+        },
+    },
+    [2] = {
+        title = "Emotes",
+        options = {
+            [1] = {
+                key = "allowActions",
+                name = "Actions",
+                tooltip = "Allows your character to perform certain emotes as actions alongside some sounds that you send.",
+            },
+            [2] = {
+                key = "allowReactions",
+                name = "Reactions",
+                tooltip = "Allows your character to perform certain emotes as actions alongside some sounds that you receive.",
             },
         },
     },
