@@ -112,7 +112,7 @@ function ns:ReceivedSound(receivedType, sender, channel)
     local sound = sounds[soundsIndex]
     local soundID = sound.id
     if specialSoundTypes[sound.type] then
-        soundID = specialSoundTypes[sound.type][race][gender]
+        soundID = specialSoundTypes[sound.type][race] and specialSoundTypes[sound.type][race][gender] or specialSoundTypes[sound.type][gender]
     end
     ns:PlaySound(PHA_options, type(soundID) == "function" and soundID() or soundID, ns:OptionValue(PHA_options, "soundChannel"))
     if ns:OptionValue(PHA_options, "allowReactions") and ns.characterName ~= sender and sound.reaction ~= nil then
