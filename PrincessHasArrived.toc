@@ -1,11 +1,23 @@
-## Interface: 110007
-## Version: 1.0.10
+## Interface: 110100
+## Version: 1.0.11
 
 ## Name: Princess Has Arrived
 ## Title: Princess Has Arrived
 ## Notes: Ding! This is your stop, ma'am!
 ## Author: RavenousAddons
-## IconAtlas: TaxiNode_Undiscovered
+## IconTexture: Interface\Icons\inv_helm_crown_c_01_rose
+
+## Category-enUS: Media
+## Category-deDE: Medien
+## Category-esES: Medios
+## Category-esMX: Medios
+## Category-frFR: Médias
+## Category-itIT: Media
+## Category-koKR: 미디어
+## Category-ptBR: Mídia
+## Category-ruRU: Медиа
+## Category-zhCN: 材质
+## Category-zhTW: 材質
 
 ## SavedVariables: PHA_options
 
